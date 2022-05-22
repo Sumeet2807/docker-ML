@@ -1,0 +1,1 @@
+torch-model-archiver --model-name test_net --version 2.0 --serialized-file XX_XX.pt --handler /home/sumeet/desktop/Projects/docker-ML/model/handler.py 
