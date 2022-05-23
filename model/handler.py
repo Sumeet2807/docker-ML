@@ -1,5 +1,10 @@
+from matplotlib.pyplot import axis
 from ts.torch_handler.base_handler import BaseHandler
 import torch
+from PIL import Image
+import requests
+from io import BytesIO
+import numpy as np
 
 class CustHandler(BaseHandler):
 
@@ -12,6 +17,27 @@ class CustHandler(BaseHandler):
         Returns:
             tensor: Returns the tensor data of the input
         """
-        print(data)
-        print(data.shape)
+
+
+        image_url = data[0]['body']['url']
+
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        print(np.array(img).shape)
+        # print(data.shape)
+        data = torch.ones((16,64))
         return torch.as_tensor(data, device=self.device)
+
+    def postprocess(self, data):
+        """
+        The post process function makes use of the output from the inference and converts into a
+        Torchserve supported response output.
+        Args:
+            data (Torch Tensor): The torch tensor received from the prediction output of the model.
+        Returns:
+            List: The post process function returns a list of the predicted output.
+        """
+        
+        data = torch.argmax(data,axis=1)
+        print(data.tolist())
+        return [data.tolist()]
