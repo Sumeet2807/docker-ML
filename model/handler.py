@@ -5,6 +5,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 import numpy as np
+import cv2
 
 class CustHandler(BaseHandler):
 
@@ -25,6 +26,7 @@ class CustHandler(BaseHandler):
         img = Image.open(BytesIO(response.content))
         print(np.array(img).shape)
         # print(data.shape)
+        img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
         data = torch.ones((16,64))
         return torch.as_tensor(data, device=self.device)
 
